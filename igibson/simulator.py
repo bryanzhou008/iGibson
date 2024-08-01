@@ -289,6 +289,8 @@ class Simulator:
         :param class_id: Class id for rendering semantic segmentation
         :return: pybullet body ids from scene.load function
         """
+        
+        raise ("DEBUG: calling import_scene function!!")
         assert isinstance(scene, Scene) and not isinstance(
             scene, InteractiveIndoorScene
         ), "import_scene can only be called with Scene that is not InteractiveIndoorScene"
@@ -536,6 +538,8 @@ class Simulator:
         :param shadow_caster: Whether to cast shadow
         :param physical_object: The reference to Object class
         """
+        
+        # raise ValueError("DEBUG: calling load_object_in_renderer function!!")
 
         # Load object in renderer, use visual shape and base_link frame
         # not CoM frame
@@ -653,6 +657,11 @@ class Simulator:
         # Load object in renderer, use visual shape from physical_object class
         # using CoM frame
         # only load URDFObject or ArticulatedObject with this function
+        
+        
+        # raise ValueError("DEBUG: calling load_articulated_object_in_renderer function!!")
+    
+    
         if not (
             isinstance(physical_object, ArticulatedObject)
             or isinstance(physical_object, URDFObject)
@@ -1144,6 +1153,9 @@ class Simulator:
         """
         Update positions in renderer without stepping the simulation. Usually used in the reset() function
         """
+        
+        # raise ValueError("DEBUG: calling sync function!!")
+        
         self.body_links_awake = 0
         for instance in self.renderer.instances:
             if instance.dynamic:
@@ -1802,7 +1814,6 @@ class Simulator:
 
                     if activation_state != PyBulletSleepState.AWAKE:
                         continue
-
                     pos, orn = p.getLinkState(instance.pybullet_uuid, link_id)[:2]
 
                 instance.set_position_for_part(xyz2mat(pos), j)

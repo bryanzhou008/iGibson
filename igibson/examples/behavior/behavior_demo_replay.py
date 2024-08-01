@@ -21,6 +21,31 @@ from igibson.utils.ig_logging import IGLogReader, IGLogWriter
 from igibson.utils.utils import parse_str_config
 
 
+def print_class_info(obj, indent=0):
+    # Get the class of the object
+    cls = obj.__class__
+
+    # Print the class name
+    print(" " * indent + f"Class: {cls.__name__}")
+
+    # Iterate through the object's attributes
+    for attr_name, attr_value in vars(obj).items():
+        print(" " * (indent + 2) + f"{attr_name}:")
+        
+        # If the attribute is an instance of a custom class, recurse
+        if hasattr(attr_value, '__dict__'):
+            print_class_info(attr_value, indent + 4)
+        else:
+            print(" " * (indent + 4) + f"{attr_value}")
+
+    # Print information about methods
+    methods = [method for method in dir(cls) if callable(getattr(cls, method)) and not method.startswith("__")]
+    if methods:
+        print(" " * (indent + 2) + "Methods:")
+        for method in methods:
+            print(" " * (indent + 4) + method)
+
+
 def verify_determinism(in_log_path, out_log_path):
     is_deterministic = True
     with h5py.File(in_log_path) as original_file, h5py.File(out_log_path) as new_file:
@@ -140,6 +165,8 @@ def replay_demo(
     filter_objects = IGLogReader.read_metadata_attr(in_log_path, "/metadata/filter_objects")
     instance_id = IGLogReader.read_metadata_attr(in_log_path, "/metadata/instance_id")
     urdf_file = IGLogReader.read_metadata_attr(in_log_path, "/metadata/urdf_file")
+    
+    
 
     if urdf_file is None:
         urdf_file = "{}_task_{}_{}_0_fixed_furniture".format(scene, task, task_id)
@@ -210,6 +237,19 @@ def replay_demo(
         )
         log_writer.set_up_data_storage()
 
+    # print("------------------------------------------ s info ------------------------------------------")
+    # print_class_info(s)
+    
+    # print("------------------------------------------ vr_settings info ------------------------------------------")
+    # print_class_info(vr_settings)
+    
+    # print("------------------------------------------ vr_rendering_settings info ------------------------------------------")
+    # print_class_info(vr_rendering_settings)
+    
+    
+    # raise
+    
+    
     try:
         for callback in start_callbacks:
             callback(igbhvr_act_inst, log_reader)
